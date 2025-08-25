@@ -7,6 +7,7 @@ serverSocket = socket(AF_INET, SOCK_STREAM)
 # Prepare a server socket
 serverPort = 6789  # any port > 1024 should be fine
 serverSocket.bind(('', serverPort))
+serverSocket.listen(1)
 
 while True:
     # Establish the connection
@@ -19,24 +20,17 @@ while True:
 
         # Extract filename from the request
         filename = message.split()[1]
-        f = open(filename[1:])  # remove leading '/'
-
-        # Read the file and prepare response
+ 
+        f = open(filename[1:], 'rb')  # open in binary mode
         outputdata = f.read()
-
-        # Send one HTTP header line into socket
-        connectionSocket.send("HTTP/1.1 200 OK\r\n\r\n".encode())
-
-        # Send the content of the requested file
-        for i in range(0, len(outputdata)):
-            connectionSocket.send(outputdata[i].encode())
-
-        connectionSocket.send("\r\n".encode())
-        connectionSocket.close()
+        connectionSocket.send(b"HTTP/1.1 200 OK\r\n\r\n")
+        print("HTTP 200: File found and sent successfully.")
+        connectionSocket.send(outputdata)
 
     except IOError:
         # Send response message for file not found
         connectionSocket.send("HTTP/1.1 404 Not Found\r\n\r\n".encode())
+        print("HTTP 404: File not found.")
         connectionSocket.send("<html><h1>404 Not Found</h1></html>".encode())
 
         # Close client socket
