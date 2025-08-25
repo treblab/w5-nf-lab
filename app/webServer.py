@@ -1,14 +1,12 @@
 #import socket module
 from socket import *
-import sys  # for terminating the program
 
 # Create server socket (TCP)
 serverSocket = socket(AF_INET, SOCK_STREAM)
 
 # Prepare a server socket
-serverPort = 6789  # you can choose any available port >1024
+serverPort = 6789  # any port > 1024 should be fine
 serverSocket.bind(('', serverPort))
-serverSocket.listen(1)  # max 1 queued connection``
 
 while True:
     # Establish the connection
@@ -43,6 +41,13 @@ while True:
 
         # Close client socket
         connectionSocket.close()
-
+        
 serverSocket.close()
-sys.exit()  # Terminate the program after sending the data
+sys.exit()  # terminate the program after sending the corresponding data
+
+
+# URL:
+# http://192.168.1.160:6789/webPage.html
+
+# Command to run the server:
+# python3 -m http.server 6789
