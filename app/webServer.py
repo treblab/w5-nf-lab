@@ -23,7 +23,13 @@ try:
             # Extract filename from the request
             filename = message.split()[1]
             print(f"Requested file: {filename[1:]}")
-    
+            
+            # check for forbidden file (this file)
+            if filename[1:]=="webserver.py":
+                connectionSocket.send(b"HTTP/1.1 403 Forbidden\r\n\r\n")
+                connectionSocket.send(b"<html><h1>403 Forbidden</h1></html>")
+                continue
+
             f = open(filename[1:], 'rb')  # open in binary mode, ignore leading slash
             outputdata = f.read()
             f.close()
